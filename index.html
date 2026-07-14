@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phần Mềm Kế Toán Mô Phỏng NKD- Phiên Bản Thực Hành Nâng Cấp</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #2980b9;
+            --light-bg: #ecf0f1;
+            --success-color: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        header p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; }
+
+        /* Tabs Navigation */
+        .nav-tabs {
+            display: flex;
+            background-color: var(--primary-color);
+            overflow-x: auto;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            background-color: transparent;
+            color: #bdc3c7;
+            padding: 14px 20px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-bottom: 3px solid #fff;
+        }
+
+        /* Sub-navigation inside Tabs */
+        .sub-nav {
+            background-color: #dfe4ea;
+            padding: 8px 15px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #ccc;
+            flex-wrap: wrap;
+        }
+
+        .sub-btn {
+            background-color: white;
+            border: 1px solid #ced4da;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .sub-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        /* Main Content Container */
+        .container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tab-content.active { display: block; }
+        .sub-content { display: none; }
+        .sub-content.active { display: block; }
+
+        /* Forms and Inputs */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .input-sodu {
+            width: 120px;
+            padding: 5px;
+            text-align: right;
+        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f2f6;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-align: center;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn:hover { background-color: #2471a3; }
+        .btn-success { background-color: var(--success-color); }
+        .btn-success:hover { background-color: #219653; }
+        .btn-danger { background-color: #e74c3c; }
+        .btn-danger:hover { background-color: #c0392b; }
+        .btn-warning { background-color: #f39c12; }
+        .btn-warning:hover { background-color: #d35400; }
+        .btn-sm { padding: 4px 8px; font-size: 12px; }
+
+        /* Dashboard Alert & Flowguide */
+        .flow-card {
+            background-color: #e8f4f8;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .inline-edit-input {
+            padding: 4px;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        /* Khung in mẫu báo cáo chi tiết công nợ & Sổ Cái & Nhật ký chung */
+        .print-only { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #printable-area, #printable-area *, 
+            #printable-socai-area, #printable-socai-area *, 
+            #printable-nhatky-area, #printable-nhatky-area * { visibility: visible; }
+            #printable-area { position: absolute; left: 0; top: 0; width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; }
+            #printable-socai-area { position: absolute; left: 0; top: 0; width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; display: block !important; }
+            #printable-nhatky-area { position: absolute; left: 0; top: 0; width: 100%; font-family: 'Times New Roman', Times, serif; color: #000; display: block !important; }
+            table { border-collapse: collapse !important; width: 100% !important; }
+            th, td { border: 1px solid #000 !important; padding: 6px !important; font-size: 11pt !important; }
+            th { background-color: #f2f2f2 !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Hệ Thống Mô Phỏng Phần Mềm Kế Toán NKD</h1>
+    <p>Môi trường thực hành Thuật toán Kế toán, do GV Nguyễn Khánh Dương phát triển</p>
+</header>
+
+<div class="nav-tabs no-print">
+    <button class="tab-btn active" onclick="switchTab(event, 'tab-doanhnghiep')">Thông tin Doanh Nghiệp</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-danhmuc')">Danh Mục</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-nhatky')">Nhật Ký Chung</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-socai')">Sổ Cái TK</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-congno')">Công Nợ (131/331/141)</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-ccdc-tscd')">CCDC & TSCĐ</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-tienluong')">Tiền Lương</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-tonghop')">Tổng Hợp Nhập Xuất Tồn</button>
+    <button class="tab-btn" onclick="switchTab(event, 'tab-baocao')">Báo Cáo Tài Chính</button>
+</div>
+
+<div class="container">
+
+    <div id="tab-doanhnghiep" class="tab-content active">
+        <h2>Thông Tin Doanh Nghiệp</h2>
+        <div class="flow-card">Bước 1: Sinh viên điền thông tin cơ sở của đơn vị thực hành trước khi lập nghiệp vụ.</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Tên Doanh Nghiệp:</label>
+                <input type="text" id="dn-name" value="Công Ty Cổ Phần Thực Hành NKD2020">
+            </div>
+            <div class="form-group">
+                <label>Mã Số Thuế:</label>
+                <input type="text" id="dn-mst" value="0102030405">
+            </div>
+        </div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Địa Chỉ:</label>
+                <input type="text" id="dn-address" value="Số 123 Đường Kế Toán, TP. Hà Nội">
+            </div>
+            <div class="form-group">
+                <label>Giám Đốc:</label>
+                <input type="text" id="dn-director" value="Nguyễn Văn A">
+            </div>
+        </div>
+        <button class="btn" onclick="alert('Đã lưu thông tin doanh nghiệp thành công!')">Lưu Cấu Hình</button>
+    </div>
+
+    <div id="tab-danhmuc" class="tab-content">
+        <h2>Hệ Thống Danh Mục Đối Tượng & Số Dư</h2>
+        <div class="sub-nav">
+            <button class="sub-btn active" onclick="switchSubTab(event, 'dm-nhanvien')">Nhân Viên (141)</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'dm-khachhang')">Khách Hàng (131)</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'dm-ncc')">Nhà Cung Cấp (331)</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'dm-hanghoa')">Vật Tư - Hàng Hóa</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'dm-taikhoan')" style="background-color: #2980b9; color: white; border-color: #2471a3; font-weight: bold;">[Tài khoản]</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'dm-sodudau')" style="background-color: #f39c12; color: white; border-color: #e67e22; font-weight: bold;">[Khai báo số dư đầu kỳ]</button>
+        </div>
+
+        <div id="dm-nhanvien" class="sub-content active">
+            <h3>Danh mục Nhân viên (Tạm ứng 141)</h3>
+            <div class="grid-3">
+                <input type="text" id="nv-ma" placeholder="Mã NV (VD: NV01)">
+                <input type="text" id="nv-ten" placeholder="Tên Nhân viên">
+                <button class="btn btn-success" onclick="addNhanVien()">Thêm Nhân Viên</button>
+            </div>
+            <table id="tbl-dm-nhanvien">
+                <thead><tr><th>Mã NV</th><th>Tên Nhân Viên</th><th style="width: 100px;">Thao tác</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="dm-khachhang" class="sub-content">
+            <h3>Danh mục Khách hàng (Phải thu 131)</h3>
+            <div class="grid-3">
+                <input type="text" id="kh-ma" placeholder="Mã KH (VD: KH01)">
+                <input type="text" id="kh-ten" placeholder="Tên Khách Hàng">
+                <button class="btn btn-success" onclick="addKhachHang()">Thêm Khách Hàng</button>
+            </div>
+            <table id="tbl-dm-khachhang">
+                <thead><tr><th>Mã KH</th><th>Tên Khách Hàng</th><th style="width: 100px;">Thao tác</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="dm-ncc" class="sub-content">
+            <h3>Danh mục Nhà cung cấp (Phải trả 331)</h3>
+            <div class="grid-3">
+                <input type="text" id="ncc-ma" placeholder="Mã NCC (VD: NCC01)">
+                <input type="text" id="ncc-ten" placeholder="Tên Nhà Cung Cấp">
+                <button class="btn btn-success" onclick="addNCC()">Thêm Nhà Cung Cấp</button>
+            </div>
+            <table id="tbl-dm-ncc">
+                <thead><tr><th>Mã NCC</th><th>Tên Nhà Cung Cấp</th><th style="width: 100px;">Thao tác</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="dm-hanghoa" class="sub-content">
+            <h3>Danh mục Vật tư - Hàng hóa (152, 156)</h3>
+            <div class="grid-4">
+                <input type="text" id="vt-ma" placeholder="Mã VT/HH">
+                <input type="text" id="vt-ten" placeholder="Tên hàng hóa">
+                <input type="text" id="vt-dvt" placeholder="Đơn vị tính">
+                <button class="btn btn-success" onclick="addVatTu()">Thêm Vật Tư</button>
+            </div>
+            <table id="tbl-dm-vattu">
+                <thead><tr><th>Mã VT/HH</th><th>Tên Vật Tư Hàng Hóa</th><th>ĐVT</th><th style="width: 100px;">Thao tác</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="dm-taikhoan" class="sub-content">
+            <h3>Quản lý và Thêm mới hệ thống Tài khoản (Cấp 1, Cấp 2, Cấp 3)</h3>
+            <div class="flow-card">Khai báo thêm các tài khoản chi tiết mà đơn vị cần quản lý. Hệ thống sẽ tự động đồng bộ tài khoản này sang bảng số dư đầu kỳ và bảng cân đối kế toán phát sinh.</div>
+            <div class="grid-3" style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #dee2e6;">
+                <div>
+                    <label>Số hiệu tài khoản:</label>
+                    <input type="text" id="tk-add-ma" placeholder="VD: 11111 (Cấp 2/3)">
+                </div>
+                <div>
+                    <label>Tên tài khoản:</label>
+                    <input type="text" id="tk-add-ten" placeholder="VD: Tiền Việt Nam tại quỹ">
+                </div>
+                <div style="display: flex; align-items: flex-end;">
+                    <button class="btn btn-success" style="width: 100%; height: 38px;" onclick="addTaiKhoanKeToan()">Thêm Tài Khoản</button>
+                </div>
+            </div>
+            
+            <table id="tbl-hethong-tk">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Số hiệu TK</th>
+                        <th>Tên tài khoản kế toán</th>
+                        <th style="width: 100px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="dm-sodudau" class="sub-content">
+            <h3>Khai báo số dư đầu kỳ của các tài khoản</h3>
+            <div class="flow-card">Sinh viên điền số dư đầu kỳ vào các ô tương ứng, sau đó nhấn "Lưu số dư". Hệ thống sẽ tự động tổng hợp vào Báo cáo Tài chính và các sổ chi tiết.</div>
+            <table id="tbl-sodudau">
+                <thead>
+                    <tr>
+                        <th>Mã TK</th>
+                        <th>Tên Tài Khoản</th>
+                        <th>Số dư Nợ đầu kỳ</th>
+                        <th>Số dư Có đầu kỳ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div style="margin-top: 15px; text-align: right;">
+                <button class="btn btn-success" onclick="luuSoDuDauKy()">Lưu Số Dư Đầu Kỳ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-nhatky" class="tab-content">
+        <h2>Nhật Ký Chung (Chứng từ gốc)</h2>
+        <div class="flow-card no-print">
+            <strong>Nguyên lý Nâng cấp:</strong> Để hạch toán nhiều Nợ, nhiều Có, hãy điền các tài khoản và số tiền cách nhau bởi dấu phẩy.<br>
+            <em>Ví dụ nhiều Nợ - 1 Có:</em> TK Nợ: <code>1111:1000000, 1121:2000000</code> | TK Có: <code>511</code> | Số tiền ($): <code>3000000</code><br>
+            <em>Ví dụ 1 Nợ - nhiều Có:</em> TK Nợ: <code>1111</code> | TK Có: <code>511:2000000, 3331:200000</code> | Số tiền ($): <code>2200000</code>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #dee2e6;" class="no-print">
+            <h3>Nhập Nghiệp Vụ Mới</h3>
+            <div class="grid-4" style="margin-bottom: 10px;">
+                <div>
+                    <label>Ngày chứng từ</label>
+                    <input type="date" id="nk-ngay" value="2026-01-01">
+                </div>
+                <div>
+                    <label>Số chứng từ</label>
+                    <input type="text" id="nk-soct" placeholder="VD: PT001, PC001, PN01">
+                </div>
+                <div>
+                    <label>Diễn giải</label>
+                    <input type="text" id="nk-diengiai" placeholder="Nội dung nghiệp vụ...">
+                </div>
+                <div>
+                    <label>Đối tượng chi tiết (Nếu có)</label>
+                    <select id="nk-doituong"><option value="">--Không chọn--</option></select>
+                </div>
+            </div>
+            <div class="grid-3" style="margin-bottom: 10px;">
+                <div>
+                    <label>Tài khoản Nợ (Cách nhau bằng dấu phẩy nếu nhiều TK)</label>
+                    <input type="text" id="nk-tkno" placeholder="VD: 1111:100, 1121:200 hoặc 1111" oninput="kiemTraTaiKhoanThue()">
+                </div>
+                <div>
+                    <label>Tài khoản Có (Cách nhau bằng dấu phẩy nếu nhiều TK)</label>
+                    <input type="text" id="nk-tkco" placeholder="VD: 511:250, 3331:50 hoặc 1111" oninput="kiemTraTaiKhoanThue()">
+                </div>
+                <div>
+                    <label>Tổng Số tiền ($)</label>
+                    <input type="number" id="nk-sotien" placeholder="0">
+                </div>
+            </div>
+
+            <div id="khung-thong-tin-hoa-don" style="display: none; background: #e3f2fd; padding: 15px; border-radius: 6px; margin-top: 15px; border: 1px dashed #1e88e5;">
+                <h4 style="margin: 0 0 10px 0; color: #1565c0;">Thông Tin Hóa Đơn Thuế GTGT (Bảng kê Mua vào / Bán ra)</h4>
+                <div class="grid-4">
+                    <div>
+                        <label>Số hóa đơn</label>
+                        <input type="text" id="nk-sohd" placeholder="VD: 0000123">
+                    </div>
+                    <div>
+                        <label>Ngày hóa đơn</label>
+                        <input type="date" id="nk-ngayhd">
+                    </div>
+                    <div>
+                        <label>Đơn vị xuất/nhận hóa đơn</label>
+                        <input type="text" id="nk-donvihd" placeholder="Tên công ty đối tác...">
+                    </div>
+                    <div>
+                        <label>Thuế suất (%)</label>
+                        <select id="nk-thuesuat">
+                            <option value="0">0%</option>
+                            <option value="5">5%</option>
+                            <option value="8">8%</option>
+                            <option value="10" selected>10%</option>
+                            <option value="KXT">Không chịu thuế / Miễn thuế</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; text-align: right;">
+                <button class="btn btn-success" onclick="addNhatKy()">Ghi Sổ (Hạch Toán)</button>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;" class="no-print">
+            <h3>Dữ liệu Nhật Ký Chung đã ghi nhận</h3>
+            <button class="btn btn-warning" onclick="xemVaInNhatKy()">[In Nhật Ký]</button>
+        </div>
+        <table id="tbl-nhatky" class="no-print">
+            <thead>
+                <tr>
+                    <th>Ngày CT</th>
+                    <th>Số CT</th>
+                    <th>Diễn Giải</th>
+                    <th>TK Nợ</th>
+                    <th>TK Có</th>
+                    <th>Số Tiền</th>
+                    <th>Thông Tin Hóa Đơn</th>
+                    <th>Mã Đối Tượng</th>
+                    <th style="width: 140px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div id="printable-nhatky-area" style="margin-top: 30px; display: none; padding: 20px; border: 1px dashed #2980b9; background: #fff;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 13px;">
+                <div>
+                    <span id="p-nk-dn-name">CÔNG TY KẾ TOÁN MÔ PHỎNG</span><br>
+                    Địa chỉ: <span id="p-nk-dn-address">Địa chỉ doanh nghiệp</span><br>
+                    MST: <span id="p-nk-dn-mst">0102030405</span>
+                </div>
+                <div style="text-align: center; font-weight: normal;">
+                    <strong>Mẫu số S03a-DN</strong>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 25px 0;">
+                <h2 style="margin: 0; text-transform: uppercase; font-size: 20px; font-weight: bold;">SỔ NHẬT KÝ CHUNG</h2>
+            </div>
+
+            <table id="tbl-print-nhatky" style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif;">
+                <thead>
+                    <tr>
+                        <th style="text-align: center; width: 12%;">Ngày chứng từ</th>
+                        <th style="text-align: center; width: 12%;">Số chứng từ</th>
+                        <th style="text-align: center;">Diễn giải</th>
+                        <th style="text-align: center; width: 10%;">TK Nợ</th>
+                        <th style="text-align: center; width: 10%;">TK Có</th>
+                        <th style="text-align: center; width: 15%;">Số Tiền Nợ</th>
+                        <th style="text-align: center; width: 15%;">Số Tiền Có</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold; text-align: center;" class="print-footer">
+                <div>
+                    Người lập sổ<br><br><br><br><span style="font-weight: normal; font-style: italic;">(Ký, họ tên)</span>
+                </div>
+                <div>
+                    Kế toán trưởng<br><br><br><br><span style="font-weight: normal; font-style: italic;">(Ký, họ tên)</span>
+                </div>
+                <div>
+                    Giám đốc<br><br><br><br><span id="p-nk-dn-director">Nguyễn Văn A</span><br><span style="font-weight: normal; font-style: italic;">(Ký, đóng dấu)</span>
+                </div>
+            </div>
+            <div style="margin-top: 30px; text-align: right;" class="no-print">
+                <button class="btn btn-warning" onclick="window.print()">Xác Nhận In Hệ Thống</button>
+                <button class="btn btn-danger" onclick="document.getElementById('printable-nhatky-area').style.display='none'">Đóng Bản Xem Thử</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-socai" class="tab-content">
+        <h2>Sổ Cái Tài Khoản</h2>
+        <div class="flow-card">Chọn tài khoản tổng hợp để truy vấn dữ liệu kết chuyển tự động từ Nhật ký chung.</div>
+        <div style="margin-bottom: 15px; display:flex; gap:10px; align-items:center;">
+            <label style="margin:0;">Xem Sổ Cái TK:</label>
+            <input type="text" id="search-tk-socai" placeholder="Nhập TK cần xem (VD: 1111)" style="width: 200px;">
+            <button class="btn" onclick="xemSoCai()">Xem Sổ</button>
+            <button class="btn btn-warning" onclick="inSoCai()">In Sổ Kế Toán</button>
+        </div>
+        <h3 id="lbl-ten-socai">Sổ Cái Tài Khoản: Tất cả</h3>
+        <table id="tbl-socai">
+            <thead>
+                <tr>
+                    <th>Ngày CT</th>
+                    <th>Số CT</th>
+                    <th>Diễn Giải</th>
+                    <th>Ghi Nợ TK</th>
+                    <th>Ghi Có TK</th>
+                    <th>Số Tiền</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div id="printable-socai-area" style="margin-top: 30px; display: none; padding: 20px; border: 1px dashed #2980b9; background: #fff;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 13px;">
+                <div>
+                    <span id="p-sc-dn-name">CÔNG TY KẾ TOÁN MÔ PHỎNG</span><br>
+                    Địa chỉ: <span id="p-sc-dn-address">Địa chỉ doanh nghiệp</span><br>
+                    MST: <span id="p-sc-dn-mst">0102030405</span>
+                </div>
+                <div style="text-align: center; font-weight: normal;">
+                    <strong>Mẫu số S03b-DN</strong>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 25px 0;">
+                <h2 style="margin: 0; text-transform: uppercase; font-size: 20px; font-weight: bold;">SỔ CÁI</h2>
+                <div style="font-size: 14px; margin-top: 5px;">Tài khoản: <strong id="p-sc-tk-ma">1111</strong> - <span id="p-sc-tk-ten">Tiền mặt tại quỹ</span></div>
+            </div>
+
+            <table id="tbl-print-socai" style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif;">
+                <thead>
+                    <tr>
+                        <th style="text-align: center; width: 10%;" rowspan="2">Ngày chứng từ</th>
+                        <th style="text-align: center; width: 10%;" rowspan="2">Số chứng từ</th>
+                        <th style="text-align: center;" rowspan="2">Diễn giải</th>
+                        <th style="text-align: center; width: 10%;" rowspan="2">TK Đối ứng</th>
+                        <th style="text-align: center; width: 30%;" colspan="2">Số Phát Sinh</th>
+                        <th style="text-align: center; width: 15%;" rowspan="2">Số Dư Lũy Kế</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 15%;">Nợ</th>
+                        <th style="width: 15%;">Có</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold; text-align: center;" class="print-footer">
+                <div>
+                    Người lập sổ<br><br><br><br><span style="font-weight: normal; font-style: italic;">(Ký, họ tên)</span>
+                </div>
+                <div>
+                    Kế toán trưởng<br><br><br><br><span style="font-weight: normal; font-style: italic;">(Ký, họ tên)</span>
+                </div>
+                <div>
+                    Giám đốc<br><br><br><br><span id="p-sc-dn-director">Nguyễn Văn A</span><br><span style="font-weight: normal; font-style: italic;">(Ký, đóng dấu)</span>
+                </div>
+            </div>
+            <div style="margin-top: 30px; text-align: right;" class="no-print">
+                <button class="btn btn-warning" onclick="window.print()">Xác Nhận In Hệ Thống</button>
+                <button class="btn btn-danger" onclick="document.getElementById('printable-socai-area').style.display='none'">Đóng Bản Xem Thử</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-congno" class="tab-content">
+        <h2>Quản Lý Sổ Chi Tiết Công Nợ</h2>
+        <div class="sub-nav no-print">
+            <button class="sub-btn active" onclick="switchSubTab(event, 'cn-131')">Phải Thu Khách Hàng (131)</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'cn-331')">Phải Trả Nhà Cung Cấp (331)</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'cn-141')">Tạm Ứng Nhân Viên (141)</button>
+        </div>
+
+        <div id="cn-131" class="sub-content active">
+            <h3>Bảng Tổng Hợp Công Nợ Phải Thu (TK 131)</h3>
+            <table id="tbl-cn-131">
+                <thead><tr><th>Mã KH</th><th>Tên Khách Hàng</th><th>Phát Sinh Nợ (Tăng thu)</th><th>Phát Sinh Có (Đã thu)</th><th>Dư Nợ Cuối Kỳ</th><th style="width: 110px;" class="no-print">Thao tác</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="cn-331" class="sub-content">
+            <h3>Bảng Tổng Hợp Công Nợ Phải Trả (TK 331)</h3>
+            <table id="tbl-cn-331">
+                <thead><tr><th>Mã NCC</th><th>Tên Nhà Cung Cấp</th><th>Phát Sinh Nợ (Đã trả)</th><th>Phát Sinh Có (Tăng nợ)</th><th>Dư Có Cuối Kỳ</th><th style="width: 110px;" class="no-print">Thao tác</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="cn-141" class="sub-content">
+            <h3>Theo Dõi Tạm Ứng Chi Tiết (TK 141)</h3>
+            <table id="tbl-cn-141">
+                <thead><tr><th>Mã NV</th><th>Tên Nhân Viên</th><th>Số Tiền Tạm Ứng</th><th>Đã Hoàn Ứng</th><th>Còn Lại</th><th style="width: 110px;" class="no-print">Thao tác</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="printable-area" style="margin-top: 30px; display: none; padding: 20px; border: 1px dashed #bbb; background: #fff;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
+                <div>
+                    <span id="p-dn-name">CÔNG TY KẾ TOÁN MÔ PHỎNG</span><br>
+                    Địa chỉ: <span id="p-dn-address">Địa chỉ doanh nghiệp</span><br>
+                    MST: <span id="p-dn-mst">0102030405</span>
+                </div>
+                <div style="text-align: center;">
+                    <strong>Mẫu số S38-DN</strong>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 25px 0;">
+                <h2 style="margin: 0; text-transform: uppercase; font-size: 20px;">SỔ CHI TIẾT CÔNG NỢ</h2>
+                <div style="font-style: italic; margin-top: 5px;">Tài khoản theo dõi: <strong id="p-tk-socai">131</strong></div>
+                <div style="font-weight: bold; margin-top: 5px;">Đối tượng: <span id="p-dt-ma">KH01</span> - <span id="p-dt-ten">Tên đối tượng</span></div>
+            </div>
+
+            <table id="tbl-print-chitiet" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align: center" rowspan="2">Ngày chứng từ</th>
+                        <th style="text-align: center" rowspan="2">Số chứng từ</th>
+                        <th style="text-align: center" rowspan="2">Diễn giải</th>
+                        <th style="text-align: center" rowspan="2">TK Đối ứng</th>
+                        <th style="text-align: center" colspan="2">Số Phát Sinh</th>
+                        <th style="text-align: center" colspan="2">Số Dư Lũy Kế</th>
+                    </tr>
+                    <tr>
+                        <th>Nợ</th>
+                        <th>Có</th>
+                        <th>Nợ</th>
+                        <th>Có</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: bold; text-align: center;" class="print-footer">
+                <div>
+                    Người lập sổ<br><br><br><br><span style="font-weight: normal;">(Ký, họ tên)</span>
+                </div>
+                <div>
+                    Kế toán trưởng<br><br><br><br><span style="font-weight: normal;">(Ký, họ tên)</span>
+                </div>
+                <div>
+                    Giám đốc<br><br><br><br><span id="p-dn-director">Nguyễn Văn A</span>
+                </div>
+            </div>
+            <div style="margin-top: 30px; text-align: right;" class="no-print">
+                <button class="btn btn-warning" onclick="window.print()">In Sổ Chi Tiết</button>
+                <button class="btn btn-danger" onclick="document.getElementById('printable-area').style.display='none'">Đóng Lại</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-ccdc-tscd" class="tab-content">
+        <h2>Theo dõi TSCĐ & Công Cụ Dụng Cụ</h2>
+        <div class="grid-2">
+            <div>
+                <h3>Bảng Phân Bổ Công Cụ Dụng Cụ (CCDC)</h3>
+                <div class="form-group"><input type="text" id="ccdc-ten" placeholder="Tên CCDC"></div>
+                <div class="grid-2">
+                    <input type="number" id="ccdc-gia" placeholder="Nguyên giá">
+                    <input type="number" id="ccdc-ky" placeholder="Số kỳ phân bổ (Tháng)">
+                </div>
+                <button class="btn btn-success" style="margin-top:10px;" onclick="addCCDC()">Thêm & Tính Phân Bổ</button>
+                <table id="tbl-ccdc" style="margin-top:15px;">
+                    <thead><tr><th>Tên CCDC</th><th>Nguyên Giá</th><th>Kỳ pb</th><th>Mức PB/Kỳ</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div>
+                <h3>Bảng Khấu Hao Tài Sản Cố Định (TSCĐ)</h3>
+                <div class="form-group"><input type="text" id="tscd-ten" placeholder="Tên tài sản"></div>
+                <div class="grid-2">
+                    <input type="number" id="tscd-gia" placeholder="Nguyên giá">
+                    <input type="number" id="tscd-nam" placeholder="Thời gian sử dụng (Năm)">
+                </div>
+                <button class="btn btn-success" style="margin-top:10px;" onclick="addTSCD()">Thêm & Tính Khấu Hao</button>
+                <table id="tbl-tscd" style="margin-top:15px;">
+                    <thead><tr><th>Tên tài sản</th><th>Nguyên Giá</th><th>Số năm KH</th><th>Mức KH/Năm</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-tienluong" class="tab-content">
+        <h2>Bảng Lập Tính Tiền Lương & Bảo Hiểm trích theo lương</h2>
+        <div class="flow-card">Hệ thống mô phỏng tính lương tháng tự động dựa trên thông tin nhân sự danh mục. Nhấp nút tính lương để lấy thông số đưa vào kết chuyển hạch toán tự động (nếu cần).</div>
+        <button class="btn" onclick="tinhTienLuongHeThong()">Tính toán Bảng Lương tháng mới</button>
+        <table id="tbl-tienluong" style="margin-top:15px;">
+            <thead>
+                <tr>
+                    <th>Mã NV</th>
+                    <th>Tên Nhân Viên</th>
+                    <th>Lương cơ bản</th>
+                    <th>BHXH trừ lương (10.5%)</th>
+                    <th>Doanh nghiệp chịu (23.5%)</th>
+                    <th>Thực Lĩnh</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="tab-tonghop" class="tab-content">
+        <h2>Tổng Hợp Nhập - Xuất - Tồn Kho Vật Tư Hàng Hóa</h2>
+        <div class="flow-card">Tổng hợp tồn kho tự động được tính toán dựa trên các nghiệp vụ hạch toán liên quan trực tiếp đến tài khoản 152 và 156 tại Nhật ký chung.</div>
+        <table id="tbl-nxt-kho">
+            <thead>
+                <tr>
+                    <th>Mã VT/HH</th>
+                    <th>Tên Hàng Hóa / Vật Tư</th>
+                    <th>ĐVT</th>
+                    <th>Giá trị Nhập trong kỳ</th>
+                    <th>Giá trị Xuất trong kỳ</th>
+                    <th>Giá trị Tồn cuối kỳ</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="tab-baocao" class="tab-content">
+        <h2>Hệ Thống Báo Cáo Tài Chính</h2>
+        <div class="sub-nav">
+            <button class="sub-btn active" onclick="switchSubTab(event, 'bc-cdps')">Bảng Cân Đối Phát Sinh</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'bc-cdkt')">Bảng Cân Đối Kế Toán</button>
+            <button class="sub-btn" onclick="switchSubTab(event, 'bc-kqkd')">Kết Quả HĐ Kinh Doanh</button>
+        </div>
+
+        <div id="bc-cdps" class="sub-content active">
+            <h3>Bảng Cân Đối Phát Sinh Các Tài Khoản</h3>
+            <button class="btn" onclick="tinhCanDoiTaiKhoan()">Xử Lý Kết Chuyển & Cập Nhật Số Liệu</button>
+            <table id="tbl-cdps">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Mã TK</th>
+                        <th rowspan="2">Tên Tài Khoản</th>
+                        <th colspan="2">Số dư đầu kỳ</th>
+                        <th colspan="2">Phát sinh trong kỳ</th>
+                        <th colspan="2">Số dư cuối kỳ</th>
+                    </tr>
+                    <tr>
+                        <th>Nợ</th>
+                        <th>Có</th>
+                        <th>Nợ</th>
+                        <th>Có</th>
+                        <th>Nợ</th>
+                        <th>Có</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="bc-cdkt" class="sub-content">
+            <h3>Bảng Cân Đối Kế Toán Rút Gọn (Tài Sản vs Nguồn Vốn)</h3>
+            <table id="tbl-cdkt">
+                <thead><tr><th>CHỈ TIÊU TÀI SẢN</th><th>SỐ TIỀN</th><th>CHỈ TIÊU NGUỒN VỐN</th><th>SỐ TIỀN</th></tr></thead>
+                <tbody>
+                    <tr><td>1. Tiền mặt (1111)</td><td id="cdkt-1111" class="text-right">0</td><td>1. Phải trả Người bán (331)</td><td id="cdkt-331" class="text-right">0</td></tr>
+                    <tr><td>2. Tiền gửi ngân hàng (1121)</td><td id="cdkt-1121" class="text-right">0</td><td>2. Phải trả người lao động (334)</td><td id="cdkt-334" class="text-right">0</td></tr>
+                    <tr><td>3. Phải thu khách hàng (131)</td><td id="cdkt-131" class="text-right">0</td><td>3. Vốn góp chủ sở hữu (4111)</td><td id="cdkt-4111" class="text-right">0</td></tr>
+                    <tr><td>4. Hàng tồn kho (152/156)</td><td id="cdkt-tonkho" class="text-right">0</td><td>4. Lợi nhuận chưa phân phối (421)</td><td id="cdkt-421" class="text-right">0</td></tr>
+                    <tr style="font-weight: bold; background: #eaedd0;"><td>TỔNG CỘNG TÀI SẢN</td><td id="cdkt-tong-ts" class="text-right">0</td><td>TỔNG CỘNG NGUỒN VỐN</td><td id="cdkt-tong-nv" class="text-right">0</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="bc-kqkd" class="sub-content">
+            <h3>Báo Cáo Kết Quả Hoạt Động Kinh Doanh Mô Phỏng</h3>
+            <table id="tbl-kqkd">
+                <thead><tr><th>Chỉ tiêu kinh doanh</th><th>Số phát sinh lũy kế</th></tr></thead>
+                <tbody>
+                    <tr><td>1. Doanh thu bán hàng và cung cấp dịch vụ (Phát sinh Có TK 511)</td><td id="kq-511" class="text-right">0</td></tr>
+                    <tr><td>2. Giá vốn hàng bán kết chuyển (Phát sinh Nợ TK 632)</td><td id="kq-632" class="text-right">0</td></tr>
+                    <tr><td>3. Chi phí doanh nghiệp kết chuyển (Phát sinh Nợ TK 642)</td><td id="kq-642" class="text-right">0</td></tr>
+                    <tr style="font-weight: bold; background: #d5f5e3;"><td>4. Lợi nhuận thuần trước thuế (Mục 1 - Mục 2 - Mục 3)</td><td id="kq-loinhuan" class="text-right">0</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- KHỞI TẠO CƠ SỞ DỮ LIỆU ---
+    let danhSachTK = {
+        '1111': 'Tiền mặt tại quỹ',
+        '1121': 'Tiền gửi ngân hàng',
+        '131': 'Phải thu khách hàng',
+        '141': 'Tạm ứng nhân viên',
+        '152': 'Nguyên liệu, vật liệu',
+        '156': 'Hàng hóa tồn kho',
+        '331': 'Phải trả người bán',
+        '334': 'Phải trả người lao động',
+        '4111': 'Vốn đầu tư của chủ sở hữu',
+        '421': 'Lợi nhuận sau thuế chưa phân phối',
+        '511': 'Doanh thu bán hàng',
+        '632': 'Giá vốn hàng bán',
+        '642': 'Chi phí quản lý doanh nghiệp',
+        '911': 'Xác định kết quả kinh doanh',
+        '1331': 'Thuế GTGT được khấu trừ của hàng hóa, dịch vụ',
+        '3331': 'Thuế GTGT phải nộp'
+    };
+
+    let db = {
+        nhanvien: [
+            {ma: 'NV01', ten: 'Nguyễn Trường Giang'},
+            {ma: 'NV02', ten: 'Trần Thị Thu'}
+        ],
+        khachhang: [
+            {ma: 'KH01', ten: 'Công ty TNHH Minh Anh'},
+            {ma: 'KH02', ten: 'Đại lý phân phối Toàn Cầu'}
+        ],
+        ncc: [
+            {ma: 'NCC01', ten: 'Tổng công ty Thép Việt Nam'},
+            {ma: 'NCC02', ten: 'Nhà máy thiết bị vật tư số 1'}
+        ],
+        vattu: [
+            {ma: 'VT01', ten: 'Thép phi 18 xây dựng', dvt: 'Tấn'},
+            {ma: 'VT02', ten: 'Xi măng Hoàng Thạch PC40', dvt: 'Tấn'}
+        ],
+        nhatky: [
+            {ngay: '2026-01-01', soct: 'VCP01', diengiai: 'Chủ doanh nghiệp góp vốn bằng tiền mặt', tkno: '4111', tkco: '1111', sotien: 500000000, doituong: '', sohd:'', ngayhd:'', donvihd:'', thuesuat:''},
+            {ngay: '2026-01-02', soct: 'TG01', diengiai: 'Nộp tiền mặt vào tài khoản ngân hàng', tkno: '1121', tkco: '1111', sotien: 200000000, doituong: '', sohd:'', ngayhd:'', donvihd:'', thuesuat:''},
+            {ngay: '2026-01-05', soct: 'PN01', diengiai: 'Mua thép phi 18 nhập kho chưa trả tiền người bán', tkno: '156', tkco: '331', sotien: 50000000, doituong: 'NCC01', sohd:'', ngayhd:'', donvihd:'', thuesuat:''},
+            {ngay: '2026-01-10', soct: 'HD01', diengiai: 'Bán hàng xuất kho thu tiền gửi ngân hàng', tkno: '1121', tkco: '511', sotien: 85000000, doituong: 'KH01', sohd:'0000215', ngayhd:'2026-01-10', donvihd:'Công ty TNHH Minh Anh', thuesuat:'10'}
+        ],
+        sodudau: {}
+    };
+
+    // Tạo sẵn số dư mặc định ban đầu cho các tài khoản
+    Object.keys(danhSachTK).forEach(ma => {
+        db.sodudau[ma] = {no: 0, co: 0};
+    });
+
+    // --- ĐIỀU HƯỚNG TABS ---
+    function switchTab(evt, tabId) {
+        let tabcontent = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+        }
+        let tablinks = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabId).classList.add("active");
+        evt.currentTarget.classList.add("active");
+
+        if(tabId === 'tab-congno') taiBangTongHopCongNo();
+        if(tabId === 'tab-tonghop') taiBangNXTKho();
+    }
+
+    function switchSubTab(evt, subId) {
+        let parent = evt.currentTarget.parentNode;
+        let contents = parent.parentNode.getElementsByClassName("sub-content");
+        for(let i=0; i<contents.length; i++){
+            contents[i].classList.remove("active");
+        }
+        let buttons = parent.getElementsByClassName("sub-btn");
+        for(let i=0; i<buttons.length; i++){
+            buttons[i].classList.remove("active");
+        }
+        document.getElementById(subId).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // --- QUẢN LÝ TÀI KHOẢN & DANH MỤC ---
+    function renderAllTables() {
+        renderNhanVien();
+        renderKhachHang();
+        renderNCC();
+        renderVatTu();
+        renderHeThongTK();
+        renderSoDuDauKy();
+        renderNhatKy();
+        capNhatDropdownDoituong();
+    }
+
+    function renderNhanVien() {
+        let tbody = document.getElementById('tbl-dm-nhanvien').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        db.nhanvien.forEach((item, index) => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${item.ma}</td><td>${item.ten}</td><td><button class="btn btn-danger btn-sm" onclick="deleteDM('nhanvien', ${index})">Xóa</button></td>`;
+        });
+    }
+
+    function addNhanVien() {
+        let ma = document.getElementById('nv-ma').value.trim();
+        let ten = document.getElementById('nv-ten').value.trim();
+        if(!ma || !ten) return alert('Vui lòng nhập đầy đủ thông tin');
+        db.nhanvien.push({ma, ten});
+        renderNhanVien();
+        capNhatDropdownDoituong();
+        document.getElementById('nv-ma').value='';
+        document.getElementById('nv-ten').value='';
+    }
+
+    function renderKhachHang() {
+        let tbody = document.getElementById('tbl-dm-khachhang').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        db.khachhang.forEach((item, index) => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${item.ma}</td><td>${item.ten}</td><td><button class="btn btn-danger btn-sm" onclick="deleteDM('khachhang', ${index})">Xóa</button></td>`;
+        });
+    }
+
+    function addKhachHang() {
+        let ma = document.getElementById('kh-ma').value.trim();
+        let ten = document.getElementById('kh-ten').value.trim();
+        if(!ma || !ten) return alert('Vui lòng nhập đầy đủ thông tin');
+        db.khachhang.push({ma, ten});
+        renderKhachHang();
+        capNhatDropdownDoituong();
+        document.getElementById('kh-ma').value='';
+        document.getElementById('kh-ten').value='';
+    }
+
+    function renderNCC() {
+        let tbody = document.getElementById('tbl-dm-ncc').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        db.ncc.forEach((item, index) => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${item.ma}</td><td>${item.ten}</td><td><button class="btn btn-danger btn-sm" onclick="deleteDM('ncc', ${index})">Xóa</button></td>`;
+        });
+    }
+
+    function addNCC() {
+        let ma = document.getElementById('ncc-ma').value.trim();
+        let ten = document.getElementById('ncc-ten').value.trim();
+        if(!ma || !ten) return alert('Vui lòng nhập đầy đủ thông tin');
+        db.ncc.push({ma, ten});
+        renderNCC();
+        capNhatDropdownDoituong();
+        document.getElementById('ncc-ma').value='';
+        document.getElementById('ncc-ten').value='';
+    }
+
+    function renderVatTu() {
+        let tbody = document.getElementById('tbl-dm-vattu').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        db.vattu.forEach((item, index) => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${item.ma}</td><td>${item.ten}</td><td>${item.dvt}</td><td><button class="btn btn-danger btn-sm" onclick="deleteDM('vattu', ${index})">Xóa</button></td>`;
+        });
+    }
+
+    function addVatTu() {
+        let ma = document.getElementById('vt-ma').value.trim();
+        let ten = document.getElementById('vt-ten').value.trim();
+        let dvt = document.getElementById('vt-dvt').value.trim();
+        if(!ma || !ten || !dvt) return alert('Vui lòng nhập đầy đủ thông tin');
+        db.vattu.push({ma, ten, dvt});
+        renderVatTu();
+        document.getElementById('vt-ma').value='';
+        document.getElementById('vt-ten').value='';
+        document.getElementById('vt-dvt').value='';
+    }
+
+    function deleteDM(key, index) {
+        if(confirm('Xác nhận xóa đối tượng danh mục này?')) {
+            db[key].splice(index, 1);
+            if(key === 'nhanvien') renderNhanVien();
+            if(key === 'khachhang') renderKhachHang();
+            if(key === 'ncc') renderNCC();
+            if(key === 'vattu') renderVatTu();
+            capNhatDropdownDoituong();
+        }
+    }
+
+    function renderHeThongTK() {
+        let tbody = document.getElementById('tbl-hethong-tk').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        Object.keys(danhSachTK).sort().forEach(ma => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td style="font-weight:bold;">${ma}</td><td>${danhSachTK[ma]}</td><td><button class="btn btn-danger btn-sm" onclick="xoaTaiKhoanDanhMuc('${ma}')">Xóa</button></td>`;
+        });
+    }
+
+    function addTaiKhoanKeToan() {
+        let ma = document.getElementById('tk-add-ma').value.trim();
+        let ten = document.getElementById('tk-add-ten').value.trim();
+        if(!ma || !ten) return alert('Vui lòng nhập số hiệu và tên tài khoản!');
+        if(danhSachTK[ma]) return alert('Số hiệu tài khoản này đã tồn tại!');
+        danhSachTK[ma] = ten;
+        if(!db.sodudau[ma]) db.sodudau[ma] = {no: 0, co: 0};
+        renderHeThongTK();
+        renderSoDuDauKy();
+        document.getElementById('tk-add-ma').value = '';
+        document.getElementById('tk-add-ten').value = '';
+    }
+
+    function xoaTaiKhoanDanhMuc(ma) {
+        if(['1111', '1121', '131', '141', '156', '331', '334', '4111', '421', '511', '632', '642', '911'].includes(ma)){
+            return alert('Không được xóa tài khoản hệ thống cốt lõi!');
+        }
+        if(confirm(`Xác nhận xóa tài khoản ${ma}?`)) {
+            delete danhSachTK[ma];
+            delete db.sodudau[ma];
+            renderHeThongTK();
+            renderSoDuDauKy();
+        }
+    }
+
+    function renderSoDuDauKy() {
+        let tbody = document.getElementById('tbl-sodudau').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        Object.keys(db.sodudau).sort().forEach(ma => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${ma}</td><td>${danhSachTK[ma] || 'Tài khoản chi tiết'}</td>
+            <td><input type="number" class="input-sodu" id="sdd-no-${ma}" value="${db.sodudau[ma].no}"></td>
+            <td><input type="number" class="input-sodu" id="sdd-co-${ma}" value="${db.sodudau[ma].co}"></td>`;
+        });
+    }
+
+    function luuSoDuDauKy() {
+        Object.keys(db.sodudau).forEach(ma => {
+            let noVal = parseFloat(document.getElementById(`sdd-no-${ma}`).value) || 0;
+            let coVal = parseFloat(document.getElementById(`sdd-co-${ma}`).value) || 0;
+            db.sodudau[ma].no = noVal;
+            db.sodudau[ma].co = coVal;
+        });
+        alert('Đã lưu số dư đầu kỳ của hệ thống tài khoản thành công!');
+    }
+
+    function capNhatDropdownDoituong() {
+        let select = document.getElementById('nk-doituong');
+        select.innerHTML = '<option value="">--Không chọn--</option>';
+        db.nhanvien.forEach(x => select.innerHTML += `<option value="${x.ma}">[NV] ${x.ma} - ${x.ten}</option>`);
+        db.khachhang.forEach(x => select.innerHTML += `<option value="${x.ma}">[KH] ${x.ma} - ${x.ten}</option>`);
+        db.ncc.forEach(x => select.innerHTML += `<option value="${x.ma}">[NCC] ${x.ma} - ${x.ten}</option>`);
+    }
+
+    function kiemTraTaiKhoanThue() {
+        let tNo = document.getElementById('nk-tkno').value;
+        let tCo = document.getElementById('nk-tkco').value;
+        if(tNo.includes('1331') || tNo.includes('3331') || tCo.includes('1331') || tCo.includes('3331')) {
+            document.getElementById('khung-thong-tin-hoa-don').style.display = 'block';
+        } else {
+            document.getElementById('khung-thong-tin-hoa-don').style.display = 'none';
+        }
+    }
+
+    // --- QUẢN LÝ NHẬT KÝ CHUNG ---
+    function renderNhatKy() {
+        let tbody = document.getElementById('tbl-nhatky').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        db.nhatky.forEach((item, index) => {
+            let row = tbody.insertRow();
+            let hdInfo = item.sohd ? `HD: ${item.sohd} (${item.thuesuat}%)` : 'Không có';
+            row.innerHTML = `
+                <td>${item.ngay}</td>
+                <td>${item.soct}</td>
+                <td>${item.diengiai}</td>
+                <td>${item.tkno}</td>
+                <td>${item.tkco}</td>
+                <td class="text-right">${item.sotien.toLocaleString()}</td>
+                <td>${hdInfo}</td>
+                <td>${item.doituong || ''}</td>
+                <td style="text-align:center;">
+                    <button class="btn btn-warning btn-sm" onclick="suaNghiVuNhatKy(${index})">Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="xoaNghiepVuNhatKy(${index})">Xóa</button>
+                </td>
+            `;
+        });
+    }
+
+    function addNhatKy() {
+        let ngay = document.getElementById('nk-ngay').value;
+        let soct = document.getElementById('nk-soct').value.trim();
+        let diengiai = document.getElementById('nk-diengiai').value.trim();
+        let tkno = document.getElementById('nk-tkno').value.trim();
+        let tkco = document.getElementById('nk-tkco').value.trim();
+        let sotien = parseFloat(document.getElementById('nk-sotien').value) || 0;
+        let doituong = document.getElementById('nk-doituong').value;
+
+        if(!ngay || !soct || !diengiai || !tkno || !tkco || sotien <= 0) {
+            return alert('Vui lòng kiểm tra lại số liệu nhập nghiệp vụ!');
+        }
+
+        let sohd = document.getElementById('nk-sohd').value.trim();
+        let ngayhd = document.getElementById('nk-ngayhd').value;
+        let donvihd = document.getElementById('nk-donvihd').value.trim();
+        let thuesuat = document.getElementById('nk-thuesuat').value;
+
+        db.nhatky.push({ngay, soct, diengiai, tkno, tkco, sotien, doituong, sohd, ngayhd, donvihd, thuesuat});
+        renderNhatKy();
+
+        document.getElementById('nk-soct').value = '';
+        document.getElementById('nk-diengiai').value = '';
+        document.getElementById('nk-tkno').value = '';
+        document.getElementById('nk-tkco').value = '';
+        document.getElementById('nk-sotien').value = '';
+        document.getElementById('nk-sohd').value = '';
+        document.getElementById('nk-donvihd').value = '';
+        document.getElementById('khung-thong-tin-hoa-don').style.display = 'none';
+    }
+
+    function xoaNghiepVuNhatKy(index) {
+        if(confirm('Bạn có thực sự muốn xóa dòng chứng từ hạch toán này?')) {
+            db.nhatky.splice(index, 1);
+            renderNhatKy();
+        }
+    }
+
+    function suaNghiVuNhatKy(index) {
+        let item = db.nhatky[index];
+        document.getElementById('nk-ngay').value = item.ngay;
+        document.getElementById('nk-soct').value = item.soct;
+        document.getElementById('nk-diengiai').value = item.diengiai;
+        document.getElementById('nk-tkno').value = item.tkno;
+        document.getElementById('nk-tkco').value = item.tkco;
+        document.getElementById('nk-sotien').value = item.sotien;
+        document.getElementById('nk-doituong').value = item.doituong;
+        if(item.sohd) {
+            document.getElementById('khung-thong-tin-hoa-don').style.display = 'block';
+            document.getElementById('nk-sohd').value = item.sohd;
+            document.getElementById('nk-ngayhd').value = item.ngayhd;
+            document.getElementById('nk-donvihd').value = item.donvihd;
+            document.getElementById('nk-thuesuat').value = item.thuesuat;
+        }
+        db.nhatky.splice(index, 1);
+        renderNhatKy();
+    }
+
+    function xemVaInNhatKy() {
+        document.getElementById('p-nk-dn-name').innerText = document.getElementById('dn-name').value.toUpperCase();
+        document.getElementById('p-nk-dn-address').innerText = document.getElementById('dn-address').value;
+        document.getElementById('p-nk-dn-mst').innerText = document.getElementById('dn-mst').value;
+        document.getElementById('p-nk-dn-director').innerText = document.getElementById('dn-director').value;
+
+        let tbody = document.getElementById('tbl-print-nhatky').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        let tongTienNo = 0, tongTienCo = 0;
+
+        db.nhatky.forEach(item => {
+            let pNo = phanTichHachToanPhucTap(item.tkno, item.sotien);
+            let pCo = phanTichHachToanPhucTap(item.tkco, item.sotien);
+
+            pNo.forEach((n, idxN) => {
+                pCo.forEach((c, idxC) => {
+                    let minTien = Math.min(n.tien, c.tien);
+                    let r = tbody.insertRow();
+                    r.innerHTML = `
+                        <td style="text-align:center;">${idxN==0 && idxC==0 ? item.ngay : ''}</td>
+                        <td style="text-align:center;font-weight:bold;">${idxN==0 && idxC==0 ? item.soct : ''}</td>
+                        <td>${idxN==0 && idxC==0 ? item.diengiai : ''}</td>
+                        <td style="text-align:center;">${n.tk}</td>
+                        <td style="text-align:center;">${c.tk}</td>
+                        <td style="text-align:right;">${minTien.toLocaleString()}</td>
+                        <td style="text-align:right;">${minTien.toLocaleString()}</td>
+                    `;
+                    tongTienNo += minTien;
+                    tongTienCo += minTien;
+                });
+            });
+        });
+
+        let rowTong = tbody.insertRow();
+        rowTong.style.fontWeight = 'bold';
+        rowTong.innerHTML = `
+            <td colspan="5" style="text-align: center; text-transform: uppercase;">Tổng Cộng Phát Sinh Nhật Ký</td>
+            <td style="text-align: right;">${tongTienNo.toLocaleString()}</td>
+            <td style="text-align: right;">${tongTienCo.toLocaleString()}</td>
+        `;
+
+        document.getElementById('printable-nhatky-area').style.display = 'block';
+        document.getElementById('printable-nhatky-area').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- SỔ CÁI TÀI KHOẢN ---
+    function phanTichHachToanPhucTap(chuoiTK, tongSotien) {
+        let ketqua = [];
+        if(!chuoiTK.includes(',')) {
+            if(chuoiTK.includes(':')) {
+                let p = chuoiTK.split(':');
+                ketqua.push({tk: p[0].trim(), tien: parseFloat(p[1]) || 0});
+            } else {
+                ketqua.push({tk: chuoiTK.trim(), tien: tongSotien});
+            }
+        } else {
+            let mang = chuoiTK.split(',');
+            mang.forEach(str => {
+                let p = str.split(':');
+                ketqua.push({tk: p[0].trim(), tien: parseFloat(p[1]) || 0});
+            });
+        }
+        return ketqua;
+    }
+
+    function xemSoCai() {
+        let tkCanXem = document.getElementById('search-tk-socai').value.trim();
+        if(!tkCanXem) return alert('Vui lòng nhập tài khoản cần xem!');
+        document.getElementById('lbl-ten-socai').innerText = `Sổ Cái Tài Khoản: ${tkCanXem} - ${danhSachTK[tkCanXem] || 'Sổ chi tiết'}`;
+        
+        let tbody = document.getElementById('tbl-socai').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        db.nhatky.forEach(item => {
+            let phuongAnNo = phanTichHachToanPhucTap(item.tkno, item.sotien);
+            let phuongAnCo = phanTichHachToanPhucTap(item.tkco, item.sotien);
+            phuongAnNo.forEach(n => {
+                phuongAnCo.forEach(c => {
+                    if(n.tk.startsWith(tkCanXem) || c.tk.startsWith(tkCanXem)) {
+                        let row = tbody.insertRow();
+                        row.innerHTML = `<td>${item.ngay}</td><td>${item.soct}</td><td>${item.diengiai}</td>
+                        <td>${n.tk}</td><td>${c.tk}</td><td class="text-right">${Math.min(n.tien, c.tien).toLocaleString()}</td>`;
+                    }
+                });
+            });
+        });
+    }
+
+    function inSoCai() {
+        let tkCanXem = document.getElementById('search-tk-socai').value.trim();
+        if(!tkCanXem) return alert('Vui lòng chọn tài khoản và bấm "Xem sổ" trước khi kết xuất trang in!');
+
+        document.getElementById('p-sc-dn-name').innerText = document.getElementById('dn-name').value.toUpperCase();
+        document.getElementById('p-sc-dn-address').innerText = document.getElementById('dn-address').value;
+        document.getElementById('p-sc-dn-mst').innerText = document.getElementById('dn-mst').value;
+        document.getElementById('p-sc-dn-director').innerText = document.getElementById('dn-director').value;
+        document.getElementById('p-sc-tk-ma').innerText = tkCanXem;
+        document.getElementById('p-sc-tk-ten').innerText = danhSachTK[tkCanXem] || 'Sổ chi tiết kế toán';
+
+        let tbody = document.getElementById('tbl-print-socai').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        let sdDauKyNo = db.sodudau[tkCanXem] ? db.sodudau[tkCanXem].no : 0;
+        let sdDauKyCo = db.sodudau[tkCanXem] ? db.sodudau[tkCanXem].co : 0;
+        let luyKeDu = sdDauKyNo - sdDauKyCo;
+
+        let rowDau = tbody.insertRow();
+        rowDau.innerHTML = `
+            <td></td><td></td><td style="font-weight:bold;">Số dư đầu kỳ toán</td><td></td>
+            <td style="text-align:right;"></td><td style="text-align:right;"></td>
+            <td style="text-align:right;font-weight:bold;">${luyKeDu >= 0 ? luyKeDu.toLocaleString() : '(' + Math.abs(luyKeDu).toLocaleString() + ')'}</td>
+        `;
+
+        let tongPsNo = 0, tongPsCo = 0;
+
+        db.nhatky.forEach(item => {
+            let phuongAnNo = phanTichHachToanPhucTap(item.tkno, item.sotien);
+            let phuongAnCo = phanTichHachToanPhucTap(item.tkco, item.sotien);
+
+            phuongAnNo.forEach(n => {
+                phuongAnCo.forEach(c => {
+                    if(n.tk.startsWith(tkCanXem) || c.tk.startsWith(tkCanXem)) {
+                        let mValue = Math.min(n.tien, c.tien);
+                        let isNo = n.tk.startsWith(tkCanXem);
+                        let tkDoiUng = isNo ? c.tk : n.tk;
+
+                        if(isNo) { tongPsNo += mValue; luyKeDu += mValue; }
+                        else { tongPsCo += mValue; luyKeDu -= mValue; }
+
+                        let row = tbody.insertRow();
+                        row.innerHTML = `
+                            <td style="text-align:center;">${item.ngay}</td>
+                            <td style="text-align:center;font-weight:bold;">${item.soct}</td>
+                            <td>${item.diengiai}</td>
+                            <td style="text-align:center;">${tkDoiUng}</td>
+                            <td style="text-align:right;">${isNo ? mValue.toLocaleString() : ''}</td>
+                            <td style="text-align:right;">${!isNo ? mValue.toLocaleString() : ''}</td>
+                            <td style="text-align:right;font-weight:bold;">${luyKeDu >= 0 ? luyKeDu.toLocaleString() : '(' + Math.abs(luyKeDu).toLocaleString() + ')'}</td>
+                        `;
+                    }
+                });
+            });
+        });
+
+        let rowTong = tbody.insertRow();
+        rowTong.style.fontWeight = 'bold';
+        rowTong.innerHTML = `
+            <td></td><td></td><td style="text-align:center;text-transform:uppercase;">Tổng cộng phát sinh sổ cái</td><td></td>
+            <td style="text-align:right;">${tongPsNo.toLocaleString()}</td>
+            <td style="text-align:right;">${tongPsCo.toLocaleString()}</td>
+            <td style="text-align:right;color:blue;">${luyKeDu >= 0 ? luyKeDu.toLocaleString() : '(' + Math.abs(luyKeDu).toLocaleString() + ')'}</td>
+        `;
+
+        document.getElementById('printable-socai-area').style.display = 'block';
+        document.getElementById('printable-socai-area').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- CHI TIẾT CÔNG NỢ ---
+    function taiBangTongHopCongNo() {
+        let tb131 = document.getElementById('tbl-cn-131').getElementsByTagName('tbody')[0];
+        tb131.innerHTML = '';
+        db.khachhang.forEach(kh => {
+            let psNo = 0, psCo = 0;
+            db.nhatky.forEach(nk => {
+                if(nk.doituong === kh.ma) {
+                    if(nk.tkno.startsWith('131')) psNo += nk.sotien;
+                    if(nk.tkco.startsWith('131')) psCo += nk.sotien;
+                }
+            });
+            let row = tb131.insertRow();
+            row.innerHTML = `<td>${kh.ma}</td><td>${kh.ten}</td><td class="text-right">${psNo.toLocaleString()}</td><td class="text-right">${psCo.toLocaleString()}</td><td class="text-right" style="font-weight:bold;color:#2980b9;">${(psNo - psCo).toLocaleString()}</td><td><button class="btn btn-sm" onclick="inSoChiTietCongNo('131', '${kh.ma}', '${kh.ten}')">In Sổ</button></td>`;
+        });
+
+        let tb331 = document.getElementById('tbl-cn-331').getElementsByTagName('tbody')[0];
+        tb331.innerHTML = '';
+        db.ncc.forEach(ncc => {
+            let psNo = 0, psCo = 0;
+            db.nhatky.forEach(nk => {
+                if(nk.doituong === ncc.ma) {
+                    if(nk.tkno.startsWith('331')) psNo += nk.sotien;
+                    if(nk.tkco.startsWith('331')) psCo += nk.sotien;
+                }
+            });
+            let row = tb331.insertRow();
+            row.innerHTML = `<td>${ncc.ma}</td><td>${ncc.ten}</td><td class="text-right">${psNo.toLocaleString()}</td><td class="text-right">${psCo.toLocaleString()}</td><td class="text-right" style="font-weight:bold;color:#c0392b;">${(psCo - psNo).toLocaleString()}</td><td><button class="btn btn-sm" onclick="inSoChiTietCongNo('331', '${ncc.ma}', '${ncc.ten}')">In Sổ</button></td>`;
+        });
+
+        let tb141 = document.getElementById('tbl-cn-141').getElementsByTagName('tbody')[0];
+        tb141.innerHTML = '';
+        db.nhanvien.forEach(nv => {
+            let psNo = 0, psCo = 0;
+            db.nhatky.forEach(nk => {
+                if(nk.doituong === nv.ma) {
+                    if(nk.tkno.startsWith('141')) psNo += nk.sotien;
+                    if(nk.tkco.startsWith('141')) psCo += nk.sotien;
+                }
+            });
+            let row = tb141.insertRow();
+            row.innerHTML = `<td>${nv.ma}</td><td>${nv.ten}</td><td class="text-right">${psNo.toLocaleString()}</td><td class="text-right">${psCo.toLocaleString()}</td><td class="text-right" style="font-weight:bold;">${(psNo - psCo).toLocaleString()}</td><td><button class="btn btn-sm" onclick="inSoChiTietCongNo('141', '${nv.ma}', '${nv.ten}')">In Sổ</button></td>`;
+        });
+    }
+
+    function inSoChiTietCongNo(tkHoatDong, maDT, tenDT) {
+        document.getElementById('p-dn-name').innerText = document.getElementById('dn-name').value.toUpperCase();
+        document.getElementById('p-dn-address').innerText = document.getElementById('dn-address').value;
+        document.getElementById('p-dn-mst').innerText = document.getElementById('dn-mst').value;
+        document.getElementById('p-dn-director').innerText = document.getElementById('dn-director').value;
+
+        document.getElementById('p-tk-socai').innerText = tkHoatDong;
+        document.getElementById('p-dt-ma').innerText = maDT;
+        document.getElementById('p-dt-ten').innerText = tenDT;
+
+        let tbody = document.getElementById('tbl-print-chitiet').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        let luykeNo = 0, luykeCo = 0;
+        
+        db.nhatky.forEach(item => {
+            if(item.doituong === maDT) {
+                let pNoArr = phanTichHachToanPhucTap(item.tkno, item.sotien);
+                let pCoArr = phanTichHachToanPhucTap(item.tkco, item.sotien);
+
+                pNoArr.forEach(n => {
+                    pCoArr.forEach(c => {
+                        if(n.tk.startsWith(tkHoatDong) || c.tk.startsWith(tkHoatDong)) {
+                            let valMin = Math.min(n.tien, c.tien);
+                            let pNo = n.tk.startsWith(tkHoatDong) ? valMin : 0;
+                            let pCo = c.tk.startsWith(tkHoatDong) ? valMin : 0;
+                            let tkDoiUng = n.tk.startsWith(tkHoatDong) ? c.tk : n.tk;
+
+                            if(tkHoatDong === '131' || tkHoatDong === '141') {
+                                luykeNo += (pNo - pCo);
+                            } else {
+                                luykeCo += (pCo - pNo);
+                            }
+
+                            let row = tbody.insertRow();
+                            row.innerHTML = `
+                                <td>${item.ngay}</td>
+                                <td style="text-align:center;font-weight:bold;">${item.soct}</td>
+                                <td>${item.diengiai}</td>
+                                <td style="text-align:center;">${tkDoiUng}</td>
+                                <td style="text-align:right;">${pNo > 0 ? pNo.toLocaleString() : ''}</td>
+                                <td style="text-align:right;">${pCo > 0 ? pCo.toLocaleString() : ''}</td>
+                                <td style="text-align:right;font-weight:bold;color:#27ae60;">${luykeNo > 0 ? luykeNo.toLocaleString() : ''}</td>
+                                <td style="text-align:right;font-weight:bold;color:#c0392b;">${luykeCo > 0 ? luykeCo.toLocaleString() : ''}</td>
+                            `;
+                        }
+                    });
+                });
+            }
+        });
+        document.getElementById('printable-area').style.display = 'block';
+        document.getElementById('printable-area').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- TSCĐ & CCDC ---
+    let dbCCDC = [], dbTSCD = [];
+    function addCCDC() {
+        let ten = document.getElementById('ccdc-ten').value;
+        let gia = parseFloat(document.getElementById('ccdc-gia').value) || 0;
+        let ky = parseInt(document.getElementById('ccdc-ky').value) || 1;
+        if(!ten || gia<=0) return alert('Nhập dữ liệu phân bổ sai!');
+        dbCCDC.push({ten, gia, ky, muc: Math.round(gia/ky)});
+        let tbody = document.getElementById('tbl-ccdc').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        dbCCDC.forEach(x => {
+            tbody.innerHTML += `<tr><td>${x.ten}</td><td>${x.gia.toLocaleString()}</td><td>${x.ky}</td><td>${x.muc.toLocaleString()}</td></tr>`;
+        });
+    }
+
+    function addTSCD() {
+        let ten = document.getElementById('tscd-ten').value;
+        let gia = parseFloat(document.getElementById('tscd-gia').value) || 0;
+        let nam = parseInt(document.getElementById('tscd-nam').value) || 1;
+        if(!ten || gia<=0) return alert('Nhập dữ liệu khấu hao sai!');
+        dbTSCD.push({ten, gia, nam, muc: Math.round(gia/nam)});
+        let tbody = document.getElementById('tbl-tscd').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        dbTSCD.forEach(x => {
+            tbody.innerHTML += `<tr><td>${x.ten}</td><td>${x.gia.toLocaleString()}</td><td>${x.nam}</td><td>${x.muc.toLocaleString()}</td></tr>`;
+        });
+    }
+
+    // --- TIỀN LƯƠNG ---
+    function tinhTienLuongHeThong() {
+        let tbody = document.getElementById('tbl-tienluong').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        db.nhanvien.forEach(x => {
+            let lcb = 6500000; 
+            let bhTrutru = Math.round(lcb * 0.105);
+            let bhDn = Math.round(lcb * 0.235);
+            let thucLinh = lcb - bhTrutru;
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${x.ma}</td><td>${x.ten}</td><td class="text-right">${lcb.toLocaleString()}</td><td class="text-right" style="color:red;">${bhTrutru.toLocaleString()}</td><td class="text-right" style="color:blue;">${bhDn.toLocaleString()}</td><td class="text-right" style="font-weight:bold;">${thucLinh.toLocaleString()}</td>`;
+        });
+    }
+
+    // --- XỬ LÝ NHẬP XUẤT TỒN KHO ---
+    function taiBangNXTKho() {
+        let tbody = document.getElementById('tbl-nxt-kho').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        db.vattu.forEach(vt => {
+            let nhap = 0, xuat = 0;
+            db.nhatky.forEach(nk => {
+                let pNo = phanTichHachToanPhucTap(nk.tkno, nk.sotien);
+                let pCo = phanTichHachToanPhucTap(nk.tkco, nk.sotien);
+                pNo.forEach(n => {
+                    if((n.tk.startsWith('152') || n.tk.startsWith('156')) && nk.diengiai.toLowerCase().includes('mua') || nk.diengiai.toLowerCase().includes('nhập')) {
+                        if(nk.doituong === vt.ma || nk.diengiai.includes(vt.ten)) nhap += n.tien;
+                    }
+                });
+                pCo.forEach(c => {
+                    if((c.tk.startsWith('152') || c.tk.startsWith('156')) && nk.diengiai.toLowerCase().includes('bán') || nk.diengiai.toLowerCase().includes('xuất')) {
+                        if(nk.doituong === vt.ma || nk.diengiai.includes(vt.ten)) xuat += c.tien;
+                    }
+                });
+            });
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${vt.ma}</td><td>${vt.ten}</td><td>${vt.dvt}</td><td class="text-right" style="color:green;">${nhap.toLocaleString()}</td><td class="text-right" style="color:red;">${xuat.toLocaleString()}</td><td class="text-right" style="font-weight:bold;">${(nhap - xuat).toLocaleString()}</td>`;
+        });
+    }
+
+    // --- THUẬT TOÁN BÁO CÁO TÀI CHÍNH ---
+    function tinhToanTungTaiKhoan() {
+        let phatSinh = {};
+        Object.keys(danhSachTK).forEach(ma => {
+            phatSinh[ma] = {no: 0, co: 0};
+        });
+        db.nhatky.forEach(item => {
+            let phuongAnNo = phanTichHachToanPhucTap(item.tkno, item.sotien);
+            let phuongAnCo = phanTichHachToanPhucTap(item.tkco, item.sotien);
+            phuongAnNo.forEach(n => { if(phatSinh[n.tk]) phatSinh[n.tk].no += n.tien; });
+            phuongAnCo.forEach(c => { if(phatSinh[c.tk]) phatSinh[c.tk].co += c.tien; });
+        });
+        return phatSinh;
+    }
+
+    function tinhCanDoiTaiKhoan() {
+        let phatSinh = tinhToanTungTaiKhoan();
+        let tbody = document.getElementById('tbl-cdps').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        let tSdNoDK = 0, tSdCoDK = 0, tPsNo = 0, tPsCo = 0, tSdNoCK = 0, tSdCoCK = 0;
+
+        Object.keys(danhSachTK).sort().forEach(ma => {
+            let sddNo = db.sodudau[ma] ? db.sodudau[ma].no : 0;
+            let sddCo = db.sodudau[ma] ? db.sodudau[ma].co : 0;
+            let psNo = phatSinh[ma] ? phatSinh[ma].no : 0;
+            let psCo = phatSinh[ma] ? phatSinh[ma].co : 0;
+
+            let sdcNo = 0, sdcCo = 0;
+            if(['1', '1111', '1121', '131', '141', '152', '156', '1331'].some(prefix => ma.startsWith(prefix))) {
+                let tinh = sddNo - sddCo + psNo - psCo;
+                if(tinh >= 0) sdcNo = tinh; else sdcCo = Math.abs(tinh);
+            } else {
+                let tinh = sddCo - sddNo + psCo - psNo;
+                if(tinh >= 0) sdcCo = tinh; else sdcNo = Math.abs(tinh);
+            }
+
+            tSdNoDK += sddNo; tSdCoDK += sddCo;
+            tPsNo += psNo; tPsCo += psCo;
+            tSdNoCK += sdcNo; tSdCoCK += sdcCo;
+
+            let row = tbody.insertRow();
+            row.innerHTML = `
+                <td style="font-weight:600;">${ma}</td>
+                <td>${danhSachTK[ma]}</td>
+                <td class="text-right">${sddNo > 0 ? sddNo.toLocaleString() : '-'}</td>
+                <td class="text-right">${sddCo > 0 ? sddCo.toLocaleString() : '-'}</td>
+                <td class="text-right" style="color:green;">${psNo > 0 ? psNo.toLocaleString() : '-'}</td>
+                <td class="text-right" style="color:blue;">${psCo > 0 ? psCo.toLocaleString() : '-'}</td>
+                <td class="text-right" style="font-weight:600;">${sdcNo > 0 ? sdcNo.toLocaleString() : '-'}</td>
+                <td class="text-right" style="font-weight:600;">${sdcCo > 0 ? sdcCo.toLocaleString() : '-'}</td>
+            `;
+        });
+
+        let rowTong = tbody.insertRow();
+        rowTong.style.fontWeight = 'bold';
+        rowTong.style.background = '#f1f2f6';
+        rowTong.innerHTML = `
+            <td colspan="2" style="text-align:center;">TỔNG CỘNG HỆ THỐNG</td>
+            <td class="text-right">${tSdNoDK.toLocaleString()}</td>
+            <td class="text-right">${tSdCoDK.toLocaleString()}</td>
+            <td class="text-right">${tPsNo.toLocaleString()}</td>
+            <td class="text-right">${tPsCo.toLocaleString()}</td>
+            <td class="text-right" style="color:#27ae60;">${tSdNoCK.toLocaleString()}</td>
+            <td class="text-right" style="color:#27ae60;">${tSdCoCK.toLocaleString()}</td>
+        `;
+
+        // Đồng bộ dữ liệu sang biểu mẫu Cân đối kế toán rút gọn & Kết quả kinh doanh
+        let dThu = phatSinh['511'] ? phatSinh['511'].co : 0;
+        let gVon = phatSinh['632'] ? phatSinh['632'].no : 0;
+        let cPhi = phatSinh['642'] ? phatSinh['642'].no : 0;
+
+        document.getElementById('kq-511').innerText = dThu.toLocaleString();
+        document.getElementById('kq-632').innerText = gVon.toLocaleString();
+        document.getElementById('kq-642').innerText = cPhi.toLocaleString();
+        document.getElementById('kq-loinhuan').innerText = (dThu - gVon - cPhi).toLocaleString();
+
+        let t1111 = db.sodudau['1111'].no + (phatSinh['1111'] ? (phatSinh['1111'].no - phatSinh['1111'].co) : 0);
+        let t1121 = db.sodudau['1121'].no + (phatSinh['1121'] ? (phatSinh['1121'].no - phatSinh['1121'].co) : 0);
+        
+        let t131 = 0;
+        db.khachhang.forEach(kh => {
+            let n = 0, c = 0;
+            db.nhatky.forEach(nk => {
+                if(nk.doituong === kh.ma) {
+                    if(nk.tkno.startsWith('131')) n += nk.sotien;
+                    if(nk.tkco.startsWith('131')) c += nk.sotien;
+                }
+            });
+            if(n > c) t131 += (n - c);
+        });
+
+        let tKho = 0;
+        ['152', '156'].forEach(tk => {
+            let n = db.sodudau[tk] ? db.sodudau[tk].no : 0;
+            let c = db.sodudau[tk] ? db.sodudau[tk].co : 0;
+            db.nhatky.forEach(nk => {
+                if(nk.tkno.startsWith(tk)) n += nk.sotien;
+                if(nk.tkco.startsWith(tk)) c += nk.sotien;
+            });
+            if(n > c) tKho += (n - c);
+        });
+
+        let t331 = 0;
+        db.ncc.forEach(ncc => {
+            let n = 0, c = 0;
+            db.nhatky.forEach(nk => {
+                if(nk.doituong === ncc.ma) {
+                    if(nk.tkno.startsWith('331')) n += nk.sotien;
+                    if(nk.tkco.startsWith('331')) c += nk.sotien;
+                }
+            });
+            if(c > n) t331 += (c - n);
+        });
+
+        let t334 = phatSinh['334'] ? (db.sodudau['334'].co - db.sodudau['334'].no + phatSinh['334'].co - phatSinh['334'].no) : 0;
+        let t411 = phatSinh['4111'] ? (db.sodudau['4111'].co - db.sodudau['4111'].no + phatSinh['4111'].co - phatSinh['4111'].no) : 0;
+        let t421 = phatSinh['421'] ? (db.sodudau['421'].co - db.sodudau['421'].no + phatSinh['421'].co - phatSinh['421'].no) : 0;
+
+        document.getElementById('cdkt-1111').innerText = t1111.toLocaleString();
+        document.getElementById('cdkt-1121').innerText = t1121.toLocaleString();
+        document.getElementById('cdkt-131').innerText = t131.toLocaleString();
+        document.getElementById('cdkt-tonkho').innerText = tKho.toLocaleString();
+        document.getElementById('cdkt-tong-ts').innerText = (t1111 + t1121 + t131 + tKho).toLocaleString();
+
+        document.getElementById('cdkt-331').innerText = t331.toLocaleString();
+        document.getElementById('cdkt-334').innerText = t334.toLocaleString();
+        document.getElementById('cdkt-4111').innerText = t411.toLocaleString();
+        document.getElementById('cdkt-421').innerText = t421.toLocaleString();
+        document.getElementById('cdkt-tong-nv').innerText = (t331 + t334 + t411 + t421).toLocaleString();
+    }
+
+    // Chạy tải toàn bộ bảng khi vừa mở chương trình
+    window.onload = function() {
+        renderAllTables();
+    };
+</script>
+
+</body>
+</html>
