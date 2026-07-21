@@ -387,7 +387,7 @@
             <div class="grid-4" style="margin-bottom: 10px;">
                 <div>
                     <label>Ngày chứng từ</label>
-                    <input type="date" id="nk-ngay" value="2026-01-01">
+                    <input type="date" id="nk-ngay" value="01-01-2026">
                 </div>
                 <div>
                     <label>Số chứng từ</label>
@@ -809,9 +809,16 @@
                 <thead><tr><th>Chỉ tiêu kinh doanh</th><th>Số phát sinh lũy kế</th></tr></thead>
                 <tbody>
                     <tr><td>1. Doanh thu bán hàng và cung cấp dịch vụ (Phát sinh Có TK 511)</td><td id="kq-511" class="text-right">0</td></tr>
+		    <tr><td>2. Doanh thu tài chính (Phát sinh Có TK 515)</td><td id="kq-515" class="text-right">0</td></tr>
+		    <tr><td>3. Thu nhập khác (Phát sinh Có TK 711)</td><td id="kq-711" class="text-right">0</td></tr>
+
                     <tr><td>2. Giá vốn hàng bán kết chuyển (Phát sinh Nợ TK 632)</td><td id="kq-632" class="text-right">0</td></tr>
-                    <tr><td>3. Chi phí doanh nghiệp kết chuyển (Phát sinh Nợ TK 642)</td><td id="kq-642" class="text-right">0</td></tr>
-                    <tr style="font-weight: bold; background: #d5f5e3;"><td>4. Lợi nhuận thuần trước thuế (Mục 1 - Mục 2 - Mục 3)</td><td id="kq-loinhuan" class="text-right">0</td></tr>
+                    <tr><td>3. Chi phí bán hàng kết chuyển (Phát sinh Nợ TK 641)</td><td id="kq-641" class="text-right">0</td></tr>
+                    <tr><td>4. Chi phí doanh nghiệp kết chuyển (Phát sinh Nợ TK 642)</td><td id="kq-642" class="text-right">0</td></tr>
+                    <tr><td>5. Chi phí tài chính kết chuyển (Phát sinh Nợ TK 635)</td><td id="kq-635" class="text-right">0</td></tr>
+                    <tr><td>6. Chi phí khác kết chuyển (Phát sinh Nợ TK 811)</td><td id="kq-811" class="text-right">0</td></tr>
+
+                    <tr style="font-weight: bold; background: #d5f5e3;"><td>4. Lợi nhuận thuần trước thuế (Mục 1 + Mục 2 + Mục 3 - Mục 4 - Mục 5 - Mục 6)</td><td id="kq-loinhuan" class="text-right">0</td></tr>
                 </tbody>
             </table>
         </div>
@@ -822,46 +829,92 @@
 <script>
     // --- KHỞI TẠO CƠ SỞ DỮ LIỆU ---
     let danhSachTK = {
-        '1111': 'Tiền mặt tại quỹ',
-        '1121': 'Tiền gửi ngân hàng',
+        '111': 'Tiền mặt tại quỹ',
+        '112': 'Tiền gửi không kỳ hạn',
         '131': 'Phải thu khách hàng',
         '141': 'Tạm ứng nhân viên',
+	'151': 'Hàng mua đang đi đường',
         '152': 'Nguyên liệu, vật liệu',
+	'153': 'Công cụ, dụng cụ',
+	'154': 'Chi phí sản xuất dở dang',
+	'155': 'Sản phẩm',
         '156': 'Hàng hóa tồn kho',
+	'157': 'Hàng gửi đi bán',
+	'211': 'Tài sản cố định hữu hình',
+	'212': 'Tài sản cố định thuê tài chính',
+	'213': 'Tài sản cố định vô hình',
+	'2141': 'Hao mòn TSCĐ hữu hình',
+	'2142': 'Hao mòn TSCĐ thuê tài chính',
+	'2143': 'Hao mòn TSCĐ vô hình',
+	'2147': 'Hao mòn BĐS đầu tư',
+	'215': 'Tài sản sinh học',
+	'217': 'Bất động sản đầu tư',
+	'221': 'Đầu tư vào công ty con',
+	'222': 'Đầu tư vào công ty liên doanh, liên kết',
+	'228': 'Đầu tư khác',
+	'229': 'Dự phòng tổn thất tài sản',
+	'241': 'Xây dựng cơ bản dở dang',
+	'242': 'Chi phí chờ phân bổ',
+	'243': 'Tài sản thuế thu nhập hoãn lại',
+	'244': 'Ký quỹ, ký cược',
         '331': 'Phải trả người bán',
+	'332': 'Phải trả cổ tức, lợi nhuận',
+	'333': 'Thuế và các khoản phải nộp nhà nước',
+	'335': 'Chi phí phải trả',
+	'336': 'Phải trả nội bộ',
+	'337': 'Thanh toán theo tiến độ hợp đồng xây dựng',
+	'338': 'Phải trả, phải nộp khác',
+	'341': 'Vay và nợ thuê tài chính',
+	'343': 'Trái phiếu phát hành',
+	'344': 'Nhận ký quỹ, ký cược',
+	'347': 'Thuế thu nhập hoãn lại phải trả',
+	'352': 'Dự phòng phải trả',
+	'353': 'Quỹ khen thưởng phúc lợi',
+	'356': 'Quỹ phát triển khoa học công nghệ',
+	'357': 'Quỹ bình ổn giá',
+
         '334': 'Phải trả người lao động',
         '4111': 'Vốn đầu tư của chủ sở hữu',
+	'412': 'Chênh lệch đánh giá lại tài sản',
+	'413': 'Chênh lệch tỷ giá hối đoái',
+	'414': 'Quỹ đầu tư phát triển',
+	'418': 'Quỹ khác thuộc vốn chủ sở hữu',
+	'419': 'Cổ phiếu mua lại của chính minh',
+
         '421': 'Lợi nhuận sau thuế chưa phân phối',
-        '511': 'Doanh thu bán hàng',
+        '511': 'Doanh thu bán hàng & cung cấp dịch vụ',
+	'515': 'Doanh thu hoạt động tài chính',
+	'521': 'Các khoản giảm trừ doanh thu',
+	'621': 'Chi phí nguyên vật liệu trực tiếp',
+	'622': 'Chi phí nhân công trực tiếp',
+	'623': 'Chi phí sử dụng máy thi công',
+	'627': 'Chi phí sản xuất chung',
+
         '632': 'Giá vốn hàng bán',
+        '635': 'Chi phí tài chính',
+        '641': 'Chi phí bán hàng',
+
         '642': 'Chi phí quản lý doanh nghiệp',
+        '711': 'Thu nhập khác',
+        '811': 'Chi phí khác',
+        '821': 'Chi phí thuế TNDN',
+
         '911': 'Xác định kết quả kinh doanh',
         '1331': 'Thuế GTGT được khấu trừ của hàng hóa, dịch vụ',
+	'1332': 'Thuế GTGT được khấu trừ của TSCĐ',
         '3331': 'Thuế GTGT phải nộp'
     };
 
     let db = {
         nhanvien: [
-            {ma: 'NV01', ten: 'Nguyễn Trường Giang'},
-            {ma: 'NV02', ten: 'Trần Thị Thu'}
         ],
         khachhang: [
-            {ma: 'KH01', ten: 'Công ty TNHH Minh Anh'},
-            {ma: 'KH02', ten: 'Đại lý phân phối Toàn Cầu'}
         ],
         ncc: [
-            {ma: 'NCC01', ten: 'Tổng công ty Thép Việt Nam'},
-            {ma: 'NCC02', ten: 'Nhà máy thiết bị vật tư số 1'}
         ],
         vattu: [
-            {ma: 'VT01', ten: 'Thép phi 18 xây dựng', dvt: 'Tấn'},
-            {ma: 'VT02', ten: 'Xi măng Hoàng Thạch PC40', dvt: 'Tấn'}
         ],
         nhatky: [
-            {ngay: '2026-01-01', soct: 'VCP01', diengiai: 'Chủ doanh nghiệp góp vốn bằng tiền mặt', tkno: '4111', tkco: '1111', sotien: 500000000, doituong: '', sohd:'', ngayhd:'', donvihd:'', thuesuat:''},
-            {ngay: '2026-01-02', soct: 'TG01', diengiai: 'Nộp tiền mặt vào tài khoản ngân hàng', tkno: '1121', tkco: '1111', sotien: 200000000, doituong: '', sohd:'', ngayhd:'', donvihd:'', thuesuat:''},
-            {ngay: '2026-01-05', soct: 'PN01', diengiai: 'Mua thép phi 18 nhập kho chưa trả tiền người bán', tkno: '156', tkco: '331', sotien: 50000000, doituong: 'NCC01', sohd:'', ngayhd:'', donvihd:'', thuesuat:''},
-            {ngay: '2026-01-10', soct: 'HD01', diengiai: 'Bán hàng xuất kho thu tiền gửi ngân hàng', tkno: '1121', tkco: '511', sotien: 85000000, doituong: 'KH01', sohd:'0000215', ngayhd:'2026-01-10', donvihd:'Công ty TNHH Minh Anh', thuesuat:'10'}
         ],
         sodudau: {}
     };
